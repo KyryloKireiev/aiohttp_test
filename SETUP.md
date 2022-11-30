@@ -7,8 +7,8 @@
 3. If you don't have pyenv - you can see how to install pyenv here:
     + https://github.com/pyenv/pyenv#usage
 4. If you have pyenv - install necessary version of Python with command:
-    + pyenv install 3.10.8
-    + you can see necessary version in .python-version
+    + pyenv install <version>
+    + you can see necessary version in .python-version in project directory
 5. Choose necessary version of Python in the project directory:
     + use command:
     + pyenv local <version>
