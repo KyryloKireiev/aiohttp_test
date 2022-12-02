@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:13.2-alpine
+    container_name: "postgres_13_2"
+    environment:
+      - POSTGRES_DB=aiohttp_blog
+      - POSTGRES_USER=kyrylo
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./postgres_data/api_demo/data
+    ports:
+      - "5432:5432"
