@@ -1,4 +1,5 @@
 import pathlib
+import aioreloader
 
 import aiopg.sa
 import yaml
@@ -36,6 +37,7 @@ def get_config():
 
 async def create_app():
     app = Application()
+    aioreloader.start()
     app["config"] = get_config()
     setup_routes(app)
     app.cleanup_ctx.append(pg_context)
