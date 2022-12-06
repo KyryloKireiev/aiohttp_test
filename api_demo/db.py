@@ -2,33 +2,29 @@ import aiopg.sa
 
 from sqlalchemy import (
     MetaData, Table, Column, ForeignKey,
-    Integer, String, Date
+    Integer, String, DateTime, Text
 )
 
-__all__ = ['category', 'article']
+from sqlalchemy.ext.declarative import declarative_base
 
-meta = MetaData()
 
-category = Table(
-    'category', meta,
+Base = declarative_base()
 
-    Column('id', Integer, primary_key=True),
-    Column('category_name', String(100), nullable=False),
-    Column('pub_date', Date, nullable=False)
-)
 
-article = Table(
-    'article', meta,
+class Article(Base):
+    __tablename__ = 'article'
+    id = Column(Integer, primary_key=True)
+    article_name = Column(String(200), nullable=False)
+    article_text = Column(Text, nullable=False)
+    likes = Column(Integer, default="0", nullable=False)
+    category_id = Column(Integer, ForeignKey('category.id', ondelete='CASCADE'))
 
-    Column('id', Integer, primary_key=True),
-    Column('article_name', String(100), nullable=False),
-    Column('article_text', String(1000), nullable=False),
-    Column('likes', Integer, server_default="0", nullable=False),
 
-    Column('category_id',
-           Integer,
-           ForeignKey('category.id', ondelete='CASCADE'))
-)
+class Category(Base):
+    __tablename__ = 'category'
+    id = Column(Integer, primary_key=True)
+    category_name = Column(String(100), nullable=False)
+    pub_date = Column(DateTime, nullable=False)
 
 
 async def pg_context(app):
