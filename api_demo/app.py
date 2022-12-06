@@ -1,8 +1,7 @@
 import pathlib
 
-import aiopg
+import aiopg.sa
 import yaml
-from aiohttp.web import run_app
 from aiohttp.web_app import Application
 
 from api_demo.routes import setup_routes
@@ -35,9 +34,9 @@ def get_config():
         return yaml.safe_load(f)
 
 
-def create_app():
+async def create_app():
     app = Application()
     app["config"] = get_config()
     setup_routes(app)
     app.cleanup_ctx.append(pg_context)
-    run_app(app)
+    return app
