@@ -6,6 +6,6 @@ if __name__ == "__main__":
     app = create_app()
     run_app(
         app,
-        host=get_config().get("postgres", {}).get("host"),
-        port=get_config().get("postgres", {}).get("port"),
+        host=get_config().get("server", {}).get("host"),
+        port=get_config().get("server", {}).get("port"),
     )
