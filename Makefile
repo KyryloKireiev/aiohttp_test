@@ -1,6 +1,9 @@
 .PHONY: setup \
 		run \
 		test \
+		flake8\
+		isort\
+		black\
 
 
 PIP_VERSION = 22.3.1
