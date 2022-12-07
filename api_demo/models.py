@@ -12,7 +12,7 @@ class BaseModel(Base):
     id = Column(Integer, primary_key=True)
 
 
-class Article(BaseModel, Base):
+class Article(BaseModel):
     __tablename__ = 'article'
     article_name = Column(String(200), nullable=False)
     article_text = Column(Text, nullable=False)
@@ -22,7 +22,7 @@ class Article(BaseModel, Base):
     update_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 
-class Category(BaseModel, Base):
+class Category(BaseModel):
     __tablename__ = 'category'
     category_name = Column(String(100), nullable=False)
 
