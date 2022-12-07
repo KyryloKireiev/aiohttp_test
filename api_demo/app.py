@@ -15,7 +15,9 @@ def get_config():
     with open(config_path) as base, open(local_config_path) as local:
         config = yaml.safe_load(base)
         local = yaml.safe_load(local)
-        return config.update(local)
+        config.update(local)
+        # print(config)
+        return config
 
 
 async def create_app():

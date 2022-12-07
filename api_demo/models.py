@@ -1,9 +1,6 @@
-from sqlalchemy import (Column, ForeignKey,
-                        Integer, String, DateTime, Text
-                        )
-from sqlalchemy.sql import func
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
-
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
@@ -13,16 +10,17 @@ class BaseModel(Base):
 
 
 class Article(BaseModel):
-    __tablename__ = 'article'
+    __tablename__ = "article"
     article_name = Column(String(200), nullable=False)
     article_text = Column(Text, nullable=False)
     likes = Column(Integer, default=0, nullable=False)
-    category_id = Column(Integer, ForeignKey('category.id', ondelete='CASCADE'))
-    create_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    update_at = Column(DateTime(timezone=True), onupdate=func.now())
+    category_id = Column(Integer, ForeignKey("category.id", ondelete="CASCADE"))
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 
 class Category(BaseModel):
-    __tablename__ = 'category'
+    __tablename__ = "category"
     category_name = Column(String(100), nullable=False)
-
