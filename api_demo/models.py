@@ -22,4 +22,4 @@ class Article(BaseModel):
 
 class Category(BaseModel):
     __tablename__ = "category"
-    name = Column(String(100), nullable=False)
+    title = Column(String(100), nullable=False)

@@ -16,7 +16,6 @@ def get_config():
         config = yaml.safe_load(base)
         local = yaml.safe_load(local)
         config.update(local)
-        # print(config)
         return config
 
 
