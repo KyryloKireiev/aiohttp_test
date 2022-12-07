@@ -3,9 +3,10 @@ from aiohttp.web import run_app
 from api_demo.app import create_app, get_config
 
 if __name__ == "__main__":
-    app = create_app()
+    config = get_config()
+    app = create_app(config)
     run_app(
         app,
-        host=get_config().get("server", {}).get("host"),
-        port=get_config().get("server", {}).get("port"),
+        host=config["server"]["host"],
+        port=config["server"]["port"],
     )

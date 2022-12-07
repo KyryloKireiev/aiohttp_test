@@ -20,9 +20,9 @@ def get_config():
         return config
 
 
-async def create_app():
+async def create_app(config):
     app = Application()
     aioreloader.start()
-    app["config"] = get_config()
+    app["config"] = config
     setup_routes(app)
     return app

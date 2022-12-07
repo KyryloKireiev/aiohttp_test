@@ -11,9 +11,8 @@ class BaseModel(Base):
 
 class Article(BaseModel):
     __tablename__ = "article"
-    article_name = Column(String(200), nullable=False)
-    article_text = Column(Text, nullable=False)
-    likes = Column(Integer, default=0, nullable=False)
+    title = Column(String(200), nullable=False)
+    content = Column(Text, nullable=False)
     category_id = Column(Integer, ForeignKey("category.id", ondelete="CASCADE"))
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
@@ -23,4 +22,4 @@ class Article(BaseModel):
 
 class Category(BaseModel):
     __tablename__ = "category"
-    category_name = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False)
