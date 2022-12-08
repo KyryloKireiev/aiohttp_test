@@ -1,6 +1,10 @@
 postgres:
-  database: aiohttp_blog
-  user: kyrylo
-  password: password
+  database:
+  user:
+  password:
   host: localhost
   port: 5432
+
+server:
+  host: localhost
+  port: 8080
