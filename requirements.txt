@@ -7,6 +7,8 @@ aiopg~=1.4.0
 alembic
 aioreloader
 pre-commit
+asyncpg
+
 
 flake8
 black
