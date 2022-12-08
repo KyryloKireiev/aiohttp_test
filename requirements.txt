@@ -1,0 +1,13 @@
+aiohttp~=3.8.3
+pytest
+
+PyYAML~=6.0
+SQLAlchemy~=1.4.44
+aiopg~=1.4.0
+alembic
+aioreloader
+pre-commit
+
+flake8
+black
+isort
