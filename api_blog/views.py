@@ -8,5 +8,5 @@ async def index(request):
     async with Session() as session:
         async with session.begin():
             qs = sa.select(1)
-            print(await session.execute(qs))
+            await session.execute(qs)
     return web.Response(text="hello aiohttp")
