@@ -36,7 +36,7 @@ my_important_option = config.get_main_option("my_important_option")
 engine = create_async_engine(url=ALEMBIC_URL, future=True, echo=True)
 
 
-async def run_migrations_online():
+async def run_migrations():
     def do_migrations(connection):
         context.configure(connection=connection, target_metadata=target_metadata)
 
@@ -49,10 +49,7 @@ async def run_migrations_online():
     await engine.dispose()
 
 
-if context.is_offline_mode():
-    asyncio.run(run_migrations_online())
-else:
-    asyncio.run(run_migrations_online())
+asyncio.run(run_migrations())
 
 """
 def run_migrations_offline() -> None:
