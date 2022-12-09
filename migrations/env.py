@@ -49,8 +49,6 @@ async def run_migrations_online():
     await engine.dispose()
 
 
-asyncio.run(run_migrations_online())
-
 if context.is_offline_mode():
     asyncio.run(run_migrations_online())
 else:
