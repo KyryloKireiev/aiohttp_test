@@ -25,9 +25,18 @@ class Article(BaseModel):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    author = Column(Integer, ForeignKey("user.id"))
 
 
 class Category(BaseModel):
     __tablename__ = "category"
 
     title = Column(String(100), nullable=False)
+
+
+class User(BaseModel):
+    __tablename__ = "user"
+
+    username = Column(String(50), nullable=False, unique=True)
+    email = Column(String(100), nullable=False, unique=True)
+    password_hash = Column(String(128), nullable=False)
