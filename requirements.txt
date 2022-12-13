@@ -4,8 +4,8 @@ pytest
 PyYAML~=6.0
 SQLAlchemy~=1.4.44
 aiopg~=1.4.0
-alembic
-aioreloader
+alembic~=1.8.1
+aioreloader~=0.4.0
 pre-commit
 asyncpg
 
@@ -13,3 +13,5 @@ asyncpg
 flake8
 black
 isort
+
+bcrypt~=4.0.1
