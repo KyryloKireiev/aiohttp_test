@@ -4,6 +4,9 @@
 		flake8\
 		isort\
 		black\
+		migration\
+		migrate\
+		downgrate\
 
 
 PIP_VERSION = 22.3.1
@@ -26,3 +29,12 @@ isort: venv/bin/activate ## Run isort
 
 black: venv/bin/activate ## Run black
 	. venv/bin/activate; black ./api_demo/
+
+migration: venv/bin/activate ## Make migration
+	. venv/bin/activate; alembic revision --autogenerate
+
+db: venv/bin/activate ## Run migration
+	. venv/bin/activate; alembic upgrade head
+
+downgrade: venv/bin/activate ## Revert the last applied migration
+	. venv/bin/activate; alembic downgrade -1

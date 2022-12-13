@@ -3,8 +3,10 @@ import pathlib
 import aioreloader
 import yaml
 from aiohttp.web_app import Application
+from sqlalchemy.ext.asyncio import create_async_engine
 
-from api_demo.routes import setup_routes
+from api_blog.models import Session
+from api_blog.routes import setup_routes
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
 config_path = BASE_DIR / "config.yaml"
@@ -24,4 +26,13 @@ async def create_app(config):
     aioreloader.start()
     app["config"] = config
     setup_routes(app)
+    app.cleanup_ctx.append(pg_context)
     return app
+
+
+async def pg_context(app):
+    url = app["config"]["db_url"]
+    Session.configure(bind=create_async_engine(url, echo=True))
+    yield
+
+    await Session.kw["bind"].dispose()
