@@ -38,5 +38,4 @@ class User(BaseModel):
     __tablename__ = "user"
 
     username = Column(String(50), nullable=False, unique=True)
-    email = Column(String(100), nullable=False, unique=True)
-    password_hash = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)

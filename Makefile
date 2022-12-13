@@ -33,7 +33,7 @@ black: venv/bin/activate ## Run black
 migration: venv/bin/activate ## Make migration
 	. venv/bin/activate; alembic revision --autogenerate
 
-migrate: venv/bin/activate ## Run migration
+db: venv/bin/activate ## Run migration
 	. venv/bin/activate; alembic upgrade head
 
 downgrade: venv/bin/activate ## Revert the last applied migration
