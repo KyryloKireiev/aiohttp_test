@@ -12,15 +12,9 @@ def session_decorator(function):
     async def wrapper(*args, **kwargs):
         async with Session() as session:
             async with session.begin():
-                return function(session, *args, **kwargs)
+                return await function(session, *args, **kwargs)
 
     return wrapper
-
-
-async def sess():
-    async with Session() as session:
-        async with session.begin():
-            return session
 
 
 async def index(request):
@@ -50,24 +44,8 @@ async def sign_up(request):
 
         return web.Response(text=json.dumps(response_obj), status=201)
     except Exception as exc:
-        data = await request.json()
-        print(data)
         response_obj = {"status": "failed", "message": str(exc)}
         return web.Response(text=json.dumps(response_obj), status=409)
-
-
-"""
-async def users_list(request):
-    async with Session() as session:
-        async with session.begin():
-            query = select(User)
-            cursor = await session.execute(query)
-            users = cursor.scalars().all()
-
-            result = [row_to_dict(elem) for elem in users]
-
-    return web.Response(text=json.dumps(result), status=200)
-"""
 
 
 @session_decorator
