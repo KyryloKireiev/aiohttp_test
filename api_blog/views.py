@@ -8,6 +8,21 @@ from .models import Session, User
 from .security import generate_password_hash
 
 
+def session_decorator(function):
+    async def wrapper(*args, **kwargs):
+        async with Session() as session:
+            async with session.begin():
+                return function(session, *args, **kwargs)
+
+    return wrapper
+
+
+async def sess():
+    async with Session() as session:
+        async with session.begin():
+            return session
+
+
 async def index(request):
     async with Session() as session:
         async with session.begin():
@@ -41,6 +56,7 @@ async def sign_up(request):
         return web.Response(text=json.dumps(response_obj), status=409)
 
 
+"""
 async def users_list(request):
     async with Session() as session:
         async with session.begin():
@@ -49,6 +65,18 @@ async def users_list(request):
             users = cursor.scalars().all()
 
             result = [row_to_dict(elem) for elem in users]
+
+    return web.Response(text=json.dumps(result), status=200)
+"""
+
+
+@session_decorator
+async def users_list(session, request):
+    query = select(User)
+    cursor = await session.execute(query)
+    users = cursor.scalars().all()
+
+    result = [row_to_dict(elem) for elem in users]
 
     return web.Response(text=json.dumps(result), status=200)
 
