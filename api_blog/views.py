@@ -2,6 +2,7 @@ import json
 
 import sqlalchemy as sa
 from aiohttp import web
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 
 from .models import Session, User
@@ -12,51 +13,10 @@ def session_decorator(function):
     async def wrapper(*args, **kwargs):
         async with Session() as session:
             async with session.begin():
-                return await function(session, *args, **kwargs)
+                print(session, *args, **kwargs)
+                return await function(*args, session=session, **kwargs)
 
     return wrapper
-
-
-async def index(request):
-    async with Session() as session:
-        async with session.begin():
-            await session.execute(sa.select(1))
-    return web.Response(text="hello aiohttp")
-
-
-async def sign_up(request):
-    try:
-        data = await request.json()
-        user = data.get("username")
-        password = data.get("password")
-        response_obj = {
-            "status": "success",
-            "message": "new user created",
-            "username": user,
-        }
-
-        async with Session() as session:
-            async with session.begin():
-                session.add_all(
-                    [User(username=user, password=generate_password_hash(password))]
-                )
-            await session.commit()
-
-        return web.Response(text=json.dumps(response_obj), status=201)
-    except Exception as exc:
-        response_obj = {"status": "failed", "message": str(exc)}
-        return web.Response(text=json.dumps(response_obj), status=409)
-
-
-@session_decorator
-async def users_list(session, request):
-    query = select(User)
-    cursor = await session.execute(query)
-    users = cursor.scalars().all()
-
-    result = [row_to_dict(elem) for elem in users]
-
-    return web.Response(text=json.dumps(result), status=200)
 
 
 def row_to_dict(row):
@@ -64,3 +24,49 @@ def row_to_dict(row):
     for column in row.__table__.columns:
         dct[column.name] = str(getattr(row, column.name))
     return dct
+
+
+@session_decorator
+async def index(request, session):
+    await session.execute(sa.select(1))
+    return web.Response(text="hello aiohttp")
+
+
+class UserView(web.View):
+    @session_decorator
+    async def get(self, *args, session, **kwargs):
+        query = select(User)
+        cursor = await session.execute(query)
+        users = cursor.scalars().all()
+
+        result = [row_to_dict(elem) for elem in users]
+
+        return web.Response(text=json.dumps(result), status=200)
+
+
+class UserRegister(web.View):
+    async def post(self):
+        try:
+            request = self.request
+            data = await request.json()
+            user = data.get("username")
+            password = data.get("password")
+            response_obj = {
+                "status": "success",
+                "message": "new user created",
+                "username": user,
+            }
+
+            async with Session() as session:
+                async with session.begin():
+                    session.add(
+                        User(username=user, password=generate_password_hash(password))
+                    )
+
+            return web.Response(text=json.dumps(response_obj), status=201)
+        except IntegrityError:
+            response_obj = {
+                "status": "failed",
+                "message": "user with the same name already exists",
+            }
+            return web.Response(text=json.dumps(response_obj), status=409)

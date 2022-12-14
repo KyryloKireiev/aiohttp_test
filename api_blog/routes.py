@@ -1,7 +1,7 @@
-from .views import index, sign_up, users_list
+from .views import UserRegister, UserView, index
 
 
 def setup_routes(app):
     app.router.add_get("/", index)
-    app.router.add_get("/users/", users_list)
-    app.router.add_post("/sign-up/", sign_up)
+    app.router.add_view("/users/", UserView)
+    app.router.add_view("/sign-up/", UserRegister)

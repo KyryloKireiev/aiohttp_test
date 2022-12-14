@@ -1,3 +1,6 @@
-dct = {"username": "user", "password": "pass"}
+from pydantic import BaseModel
 
-print(len(dct))
+
+class UserValidator(BaseModel):
+    username: str
+    password: str
