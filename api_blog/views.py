@@ -2,6 +2,7 @@ import json
 
 import sqlalchemy as sa
 from aiohttp import web
+from marshmallow import ValidationError
 from sqlalchemy.future import select
 
 from .models import Session, User
@@ -59,7 +60,7 @@ class UserRegister(web.View):
                 "message": "new user created",
                 "username": user,
             }
-        except ValueError as exp:
+        except ValidationError as exp:
             response_obj = {
                 "status": "failed",
                 "message": str(exp),
