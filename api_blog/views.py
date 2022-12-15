@@ -2,11 +2,11 @@ import json
 
 import sqlalchemy as sa
 from aiohttp import web
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 
 from .models import Session, User
 from .security import generate_password_hash
+from .validators import UserValidation
 
 
 def session_decorator(function):
@@ -48,25 +48,38 @@ class UserRegister(web.View):
     async def post(self):
         try:
             request = self.request
-            data = await request.json()
-            user = data.get("username")
-            password = data.get("password")
+            user_data = await request.json()
+            schema = UserValidation()
+            user_is_valid = schema.load(user_data)
+            result = schema.dump(user_is_valid)
+            user = result["username"]
+            password = result["password"]
             response_obj = {
                 "status": "success",
                 "message": "new user created",
                 "username": user,
             }
-
-            async with Session() as session:
-                async with session.begin():
-                    session.add(
-                        User(username=user, password=generate_password_hash(password))
-                    )
-
-            return web.Response(text=json.dumps(response_obj), status=201)
-        except IntegrityError:
+        except ValueError as exp:
             response_obj = {
                 "status": "failed",
-                "message": "user with the same name already exists",
+                "message": str(exp),
             }
-            return web.Response(text=json.dumps(response_obj), status=409)
+            return web.Response(text=json.dumps(response_obj), status=422)
+
+        async with Session() as session:
+            async with session.begin():
+                exist = select(User).where(User.username == user)
+                result = await session.execute(exist)
+                user_in_db = result.scalars().all()
+                if user_in_db:
+                    response_obj = {
+                        "status": "failed",
+                        "message": "user with the same name already exists",
+                    }
+                    return web.Response(text=json.dumps(response_obj), status=409)
+
+                session.add(
+                    User(username=user, password=generate_password_hash(password))
+                )
+
+            return web.Response(text=json.dumps(response_obj), status=201)
