@@ -46,7 +46,8 @@ class UserView(web.View):
 
 
 class SignUpView(web.View):
-    async def post(self):
+    @session_decorator
+    async def post(self, session):
         try:
             request = self.request
             user_data = await request.json()
@@ -67,20 +68,16 @@ class SignUpView(web.View):
             }
             return web.Response(text=json.dumps(response_obj), status=422)
 
-        async with Session() as session:
-            async with session.begin():
-                exist = select(User).where(User.username == user)
-                result = await session.execute(exist)
-                user_in_db = result.scalars().all()
-                if user_in_db:
-                    response_obj = {
-                        "status": "failed",
-                        "message": "user with the same name already exists",
-                    }
-                    return web.Response(text=json.dumps(response_obj), status=409)
+        exist = select(User).where(User.username == user)
+        result = await session.execute(exist)
+        user_in_db = result.scalars().all()
+        if user_in_db:
+            response_obj = {
+                "status": "failed",
+                "message": "user with the same name already exists",
+            }
+            return web.Response(text=json.dumps(response_obj), status=409)
 
-                session.add(
-                    User(username=user, password=generate_password_hash(password))
-                )
+        session.add(User(username=user, password=generate_password_hash(password)))
 
-            return web.Response(text=json.dumps(response_obj), status=201)
+        return web.Response(text=json.dumps(response_obj), status=201)
