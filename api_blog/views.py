@@ -6,8 +6,8 @@ from marshmallow import ValidationError
 from sqlalchemy.future import select
 
 from .models import Session, User
+from .schemas import SignUpSchema
 from .security import generate_password_hash
-from .validators import UserValidation
 
 
 def session_decorator(function):
@@ -45,12 +45,12 @@ class UserView(web.View):
         return web.Response(text=json.dumps(result), status=200)
 
 
-class UserRegister(web.View):
+class SignUpView(web.View):
     async def post(self):
         try:
             request = self.request
             user_data = await request.json()
-            schema = UserValidation()
+            schema = SignUpSchema()
             user_is_valid = schema.load(user_data)
             result = schema.dump(user_is_valid)
             user = result["username"]
