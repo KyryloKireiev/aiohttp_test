@@ -1,5 +1,14 @@
 from contextvars import ContextVar
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, select
+
+from sqlalchemy import (
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    select,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -12,7 +21,7 @@ Session = sessionmaker(class_=AsyncSession)
 current_session = ContextVar("session")
 
 
-def session_decorator(function):
+def make_session(function):
     async def wrapper(*args, **kwargs):
         async with Session() as session:
             async with session.begin():
@@ -33,6 +42,14 @@ class BaseModel(Base):
     async def exists(cls, **kwargs):
         qs = select(cls).filter_by(**kwargs).exists().select()
         return (await current_session.get().execute(qs)).scalar()
+
+    @classmethod
+    async def create(cls, **kwargs):
+        new_object = cls(**kwargs)
+        current_session.get().add(new_object)
+        await current_session.get().flush()
+        await current_session.get().refresh(new_object)
+        return new_object
 
 
 class CreatedMixin:
@@ -57,7 +74,7 @@ class Category(BaseModel):
     title = Column(String(100), nullable=False)
 
 
-class User(BaseModel):
+class User(CreatedMixin, BaseModel):
     __tablename__ = "user"
 
     username = Column(String(50), nullable=False, unique=True)

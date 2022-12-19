@@ -1,15 +1,15 @@
 """create tables
 
-Revision ID: 8510ef6d49c1
+Revision ID: fbed621c559c
 Revises:
-Create Date: 2022-12-13 11:22:56.061740
+Create Date: 2022-12-19 14:27:11.756104
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = "8510ef6d49c1"
+revision = "fbed621c559c"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,6 +26,12 @@ def upgrade() -> None:
     op.create_table(
         "user",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
         sa.Column("username", sa.String(length=50), nullable=False),
         sa.Column("password", sa.String(length=128), nullable=False),
         sa.PrimaryKeyConstraint("id"),
@@ -34,15 +40,15 @@ def upgrade() -> None:
     op.create_table(
         "article",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("title", sa.String(length=200), nullable=False),
-        sa.Column("content", sa.Text(), nullable=False),
-        sa.Column("category_id", sa.Integer(), nullable=True),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),
             server_default=sa.text("now()"),
             nullable=False,
         ),
+        sa.Column("title", sa.String(length=200), nullable=False),
+        sa.Column("content", sa.Text(), nullable=False),
+        sa.Column("category_id", sa.Integer(), nullable=True),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("author", sa.Integer(), nullable=True),
         sa.ForeignKeyConstraint(
