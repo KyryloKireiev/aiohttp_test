@@ -1,4 +1,4 @@
-from .views import SignUpView, UserView, index
+from blog.api.views import SignUpView, UserView, index
 
 
 def setup_routes(app):

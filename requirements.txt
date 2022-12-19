@@ -8,6 +8,7 @@ alembic~=1.8.1
 aioreloader~=0.4.0
 pre-commit
 asyncpg
+contextvars==2.4
 
 
 flake8

@@ -4,8 +4,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from api_blog.app import get_config
-from api_blog.models import Base
+from blog.app import get_config
+from blog.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

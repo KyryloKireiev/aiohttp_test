@@ -5,8 +5,8 @@ import yaml
 from aiohttp.web_app import Application
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from api_blog.models import Session
-from api_blog.routes import setup_routes
+from blog.models import Session
+from blog.routes import setup_routes
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
 config_path = BASE_DIR / "config.yaml"
