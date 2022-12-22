@@ -1,4 +1,5 @@
 from contextvars import ContextVar
+from functools import wraps
 
 from sqlalchemy import (
     Column,
@@ -11,17 +12,42 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import load_only, sessionmaker
 from sqlalchemy.sql import func
 
 Base = declarative_base()
 
+
+class ContextProxy:
+    """Proxy for context variables."""
+
+    def __init__(self, contextvar):
+        """Initialize.
+
+        :param contextvar: context variable
+        """
+        self.var = contextvar
+        self.set = self.var.set
+        self.reset = self.var.reset
+
+    def __getattr__(self, attr):
+        """Get context variable attribute.
+
+        :param attr: attribute
+        :return: attribute value or None
+        """
+        context = self.var.get(None)
+        return getattr(context, attr, None)
+
+
 Session = sessionmaker(class_=AsyncSession)
 
-current_session = ContextVar("session")
+_current_session = ContextVar("session")
+current_session = ContextProxy(_current_session)
 
 
 def make_session(function):
+    @wraps(function)
     async def wrapper(*args, **kwargs):
         async with Session() as session:
             async with session.begin():
@@ -41,15 +67,21 @@ class BaseModel(Base):
     @classmethod
     async def exists(cls, **kwargs):
         qs = select(cls).filter_by(**kwargs).exists().select()
-        return (await current_session.get().execute(qs)).scalar()
+        return (await current_session.execute(qs)).scalar()
 
     @classmethod
     async def create(cls, **kwargs):
         new_object = cls(**kwargs)
-        current_session.get().add(new_object)
-        await current_session.get().flush()
-        await current_session.get().refresh(new_object)
+        current_session.add(new_object)
+        await current_session.flush()
+        await current_session.refresh(new_object)
         return new_object
+
+    @classmethod
+    async def get_all(cls, **kwargs):
+        query = select(cls)
+        cursor = await current_session.execute(query)
+        return cursor.scalars().all()
 
 
 class CreatedMixin:
@@ -79,3 +111,9 @@ class User(CreatedMixin, BaseModel):
 
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
+
+    @classmethod
+    async def get_all(cls):
+        query = select(cls).options(load_only(cls.id, cls.username, cls.created_at))
+        cursor = await current_session.execute(query)
+        return cursor.scalars().all()

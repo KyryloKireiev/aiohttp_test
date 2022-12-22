@@ -18,3 +18,5 @@ isort
 bcrypt~=4.0.1
 
 marshmallow~=3.19.0
+
+yarl~=1.8.2
