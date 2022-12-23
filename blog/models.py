@@ -113,7 +113,12 @@ class User(CreatedMixin, BaseModel):
     password = Column(String(128), nullable=False)
 
     @classmethod
-    async def get_all(cls):
-        query = select(cls).options(load_only(cls.id, cls.username, cls.created_at))
+    async def get_all(cls, limit, offset):
+        query = (
+            select(cls)
+            .options(load_only(cls.id, cls.username, cls.created_at))
+            .limit(limit)
+            .offset(offset)
+        )
         cursor = await current_session.execute(query)
         return cursor.scalars().all()

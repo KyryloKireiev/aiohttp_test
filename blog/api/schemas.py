@@ -20,7 +20,7 @@ class UserListSchema(Schema):
     next_page = fields.URL()
 
 
-class UserQuerySchema(Schema):
+class PageQueryParamsSchema(Schema):
     page = fields.Integer(
         required=True, validate=[Range(min=1, error="Number of page must be above 0")]
     )
