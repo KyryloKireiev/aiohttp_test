@@ -1,7 +1,6 @@
 venv/
 .idea/
 __pycache__/
-blog/.pytest_cache/
 
 *.sqlite3
 *.DS_Store

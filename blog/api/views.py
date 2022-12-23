@@ -25,16 +25,14 @@ class UserView(web.View):
         query_param = PageQueryParamsSchema().load(self.request.query)
         page = query_param["page"]
         count = query_param["count"]
-        query = await User.get_all(limit=count, offset=page * count - count)
+        users = await User.get_all(limit=count, offset=page * count - count)
 
         return web.Response(
             body=UserListSchema().dumps(
                 {
-                    "count": len(query),
-                    "users": query,
+                    "count": len(users),
+                    "users": users,
                 },
-                indent=4,
-                sort_keys=True,
             )
         )
 
@@ -55,4 +53,4 @@ class SignUpView(web.View):
         new_user = await User.create(
             username=username, password=generate_hash(password)
         )
-        return web.Response(text=UserSchema().dumps(new_user), status=201)
+        return web.Response(body=UserSchema().dumps(new_user), status=201)

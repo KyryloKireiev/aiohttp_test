@@ -16,15 +16,16 @@ class UserSchema(Schema):
 class UserListSchema(Schema):
     users = fields.Nested(UserSchema(many=True))
     count = fields.Integer()
-    previous_page = fields.URL()
-    next_page = fields.URL()
 
 
 class PageQueryParamsSchema(Schema):
     page = fields.Integer(
-        required=True, validate=[Range(min=1, error="Number of page must be above 0")]
+        required=False,
+        missing=1,
+        validate=[Range(min=1, error="Number of page must be above 0")],
     )
     count = fields.Integer(
-        required=True,
+        required=False,
+        missing=5,
         validate=[Range(min=1, error="Count of elements must be above 0")],
     )
