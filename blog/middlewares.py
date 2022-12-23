@@ -8,9 +8,6 @@ from marshmallow import ValidationError
 async def error_middleware(request, handler):
     try:
         return await handler(request)
-    except web.HTTPException as ex:
-        response_obj = {"error": str(ex.text)}
-        return web.Response(text=json.dumps(response_obj))
     except ValidationError as ex:
         response_obj = {"error": str(ex)}
         return web.Response(text=json.dumps(response_obj))
