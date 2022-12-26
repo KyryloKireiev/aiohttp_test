@@ -21,11 +21,11 @@ class UserListSchema(Schema):
 class PageQueryParamsSchema(Schema):
     page = fields.Integer(
         required=False,
-        missing=1,
+        load_default=1,
         validate=[Range(min=1, error="Number of page must be above 0")],
     )
     count = fields.Integer(
         required=False,
-        missing=5,
+        load_default=5,
         validate=[Range(min=1, error="Count of elements must be above 0")],
     )

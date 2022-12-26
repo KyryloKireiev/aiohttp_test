@@ -38,3 +38,6 @@ db: venv/bin/activate ## Run migration
 
 downgrade: venv/bin/activate ## Revert the last applied migration
 	. venv/bin/activate; alembic downgrade -1
+
+test: venv/bin/activate ## Run tests
+	. venv/bin/activate; pytest
