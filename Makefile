@@ -7,6 +7,7 @@
 		migration\
 		migrate\
 		downgrate\
+		test\
 
 
 PIP_VERSION = 22.3.1
@@ -40,4 +41,4 @@ downgrade: venv/bin/activate ## Revert the last applied migration
 	. venv/bin/activate; alembic downgrade -1
 
 test: venv/bin/activate ## Run tests
-	. venv/bin/activate; pytest
+	. venv/bin/activate; python -m pytest $(filter-out $@,$(MAKECMDGOALS)) -s
