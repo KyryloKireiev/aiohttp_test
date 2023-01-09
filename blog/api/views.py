@@ -26,14 +26,16 @@ class UserView(web.View):
         page = query_param["page"]
         count = query_param["count"]
         users = await User.get_all(limit=count, offset=page * count - count)
+        headers = {"content-type": "json"}
 
         return web.Response(
             body=UserListSchema().dumps(
                 {
                     "count": len(users),
                     "users": users,
-                },
-            )
+                }
+            ),
+            headers=headers,
         )
 
 

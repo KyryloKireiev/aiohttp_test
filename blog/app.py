@@ -34,7 +34,7 @@ async def create_app(config):
 
 async def pg_context(app):
     url = app["config"]["db_url"]
-    Session.configure(bind=create_async_engine(url, echo=True))
+    Session.configure(bind=create_async_engine(url, echo=False))
     yield
 
     await Session.kw["bind"].dispose()

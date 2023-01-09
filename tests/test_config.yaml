@@ -1,0 +1,1 @@
+db_url: postgresql+asyncpg://kyrylo:password@localhost:5432/test

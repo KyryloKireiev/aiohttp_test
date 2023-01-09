@@ -16,6 +16,7 @@ from sqlalchemy.orm import load_only, sessionmaker
 from sqlalchemy.sql import func
 
 Base = declarative_base()
+Session = sessionmaker(class_=AsyncSession)
 
 
 class ContextProxy:
@@ -39,8 +40,6 @@ class ContextProxy:
         context = self.var.get(None)
         return getattr(context, attr, None)
 
-
-Session = sessionmaker(class_=AsyncSession)
 
 _current_session = ContextVar("session")
 current_session = ContextProxy(_current_session)

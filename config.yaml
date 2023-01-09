@@ -1,9 +1,24 @@
-postgres:
-  database:
-  user:
-  password:
-  host: localhost
-  port: 5432
+db_url:
+
+# engine = create_engine(dialect+driver://username:password@host:port/database_name)
+
+# Parameters:
+
+# dialect – Name of the DBMS. The dialect is the system
+# SQLAlchemy uses to communicate with various types of
+# DBAPIs and databases like PostgreSQL, MySQL, MS SQL, etc.
+
+# driver – Name of the DB API that moves information between SQLAlchemy and the database.
+
+# Username – Name of the admin
+
+# Password – Password of the admin
+
+# host – Name of the host in which the database is hosted
+
+# port – port number through which the database can be accessed
+
+# database_name – Name of the database
 
 server:
   host: localhost
